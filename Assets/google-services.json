@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "301976803353",
+    "firebase_url": "https://ntut-web-lab-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ntut-web-lab",
+    "storage_bucket": "ntut-web-lab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301976803353:android:91161397a395295a08f288",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.ARONE"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301976803353-cjis64biv4k25qhqj0il3tkot52n85ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsZd1Ag-KsjkQWU0XA_9zBM4CCudgmuf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "301976803353-cjis64biv4k25qhqj0il3tkot52n85ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
