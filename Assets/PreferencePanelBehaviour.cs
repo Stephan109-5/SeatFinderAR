@@ -7,6 +7,9 @@ namespace SeatFinder
 {
     public class PreferencePanelBehaviour : MonoBehaviour
     {
+        private Animation menuTransform;
+        private bool showMenu;
+
         private Slider _temperatureSlider;
         private Slider _noiseSlider;
         private Slider _windowSlider;
@@ -14,6 +17,7 @@ namespace SeatFinder
         private TMP_InputField _userNameInput;
         private Button _findSeatButton;
         public string UserName;
+        public TMP_Text SliderBtnText;
 
         private Main _mainScript;
         
@@ -29,6 +33,9 @@ namespace SeatFinder
             _mainScript = GameObject.Find("AreaTarget").GetComponent<Main>();
             
             _findSeatButton.onClick.AddListener(FindSeat);
+
+            showMenu = true;
+            menuTransform = transform.GetChild(0).GetComponent<Animation>();
         }
 
         public void FindSeat()
@@ -47,7 +54,25 @@ namespace SeatFinder
             
             UserPreference userPreferences = new UserPreference(tempVal, noiseVal, windowVal, outletVal);
             _mainScript.showBestSeats(userPreferences);
-            gameObject.SetActive(false);
+            /*gameObject.SetActive(false);*/
+            HidePanel();
+        }
+
+        public void HidePanel()
+        {
+            if (showMenu)
+            {
+                menuTransform.Play("SlidingMenu");
+                showMenu = false;
+                SliderBtnText.text = "^";
+            }
+            else
+            {
+                menuTransform.Play("SlideUp");
+                showMenu = true;
+                SliderBtnText.text = "v";
+            }
+            
         }
     }
 }
