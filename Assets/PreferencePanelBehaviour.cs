@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace SeatFinder
 {
@@ -15,7 +16,8 @@ namespace SeatFinder
         private Slider _windowSlider;
         private Toggle _outletToggle;
         private TMP_InputField _userNameInput;
-        private Button _findSeatButton;
+        private Button _findSeatButton; 
+        private Button GoBackButton;
         public string UserName;
         public TMP_Text SliderBtnText;
 
@@ -36,6 +38,8 @@ namespace SeatFinder
 
             showMenu = true;
             menuTransform = transform.GetChild(0).GetComponent<Animation>();
+            GoBackButton = transform.GetChild(0).Find("GoBackBtn").GetComponent<Button>();
+            GoBackButton.onClick.AddListener(GoBackScene);
         }
 
         public void FindSeat()
@@ -73,6 +77,11 @@ namespace SeatFinder
                 SliderBtnText.text = "v";
             }
             
+        }
+
+       void GoBackScene()
+        {
+            SceneManager.LoadScene("StartScene");
         }
     }
 }

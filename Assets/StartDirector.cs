@@ -8,11 +8,12 @@ using UnityEngine.UI;
 public class StartDirector : MonoBehaviour
 {
     private string scene_name;
+    public TMP_Dropdown dropdown;
 
     // Start is called before the first frame update
     void Start()
     {
-        scene_name = "scene";
+        scene_name = dropdown.options[dropdown.value].text;
     }
 
     // Update is called once per frame
