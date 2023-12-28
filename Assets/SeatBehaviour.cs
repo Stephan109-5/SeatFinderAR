@@ -23,9 +23,9 @@ namespace SeatFinder
 
         public float closeThreshold = 2f;
         public float mediumThreshold = 4f;
-        
+
         private Camera _mainCam;
-        
+
         private GameObject _seatIcons;
         private Transform _seatAvailableUI;
         private Transform _seatReservedUI;
@@ -40,7 +40,7 @@ namespace SeatFinder
         private DatabaseReference reference;
         private string seatOccupant;
         private float timer;
-        
+
 
         private void Start()
         {
@@ -49,24 +49,26 @@ namespace SeatFinder
             ClosestWindowDist = float.MaxValue;
             OutletsPresent = false;
             _mainCam = Camera.main;
-            _seatIcons       = transform.GetChild(0).GetChild(0).Find("Icons").gameObject;
+            _seatIcons = transform.GetChild(0).GetChild(0).GetChild(0).Find("Icons").gameObject;
+
+
             _textContainerUI = transform.GetChild(0).GetChild(0).Find("Text").gameObject;
 
             _seatAvailableUI = _textContainerUI.transform.Find("Available");
-            _seatReservedUI  = _textContainerUI.transform.Find("Reserved");
-            _seatTitleUI     = _textContainerUI.transform.Find("Title");
+            _seatReservedUI = _textContainerUI.transform.Find("Reserved");
+            _seatTitleUI = _textContainerUI.transform.Find("Title");
             _seatTitleUI.GetComponent<TextMeshProUGUI>().text = gameObject.name.ToUpper();
-            
+
             _mainScript = GameObject.Find("AreaTarget").GetComponent<Main>();
-            
+
             //hide seat 3d model
-           Destroy(GetComponent<MeshRenderer>());
-            
+            Destroy(GetComponent<MeshRenderer>());
+
             _arrow = transform.GetChild(1).GetChild(0).gameObject;
             _arrow.SetActive(false);
             timer = 0;
             _prefPanel = GameObject.Find("PreferenceCanvas").GetComponent<PreferencePanelBehaviour>();
-            
+
             // hide seat ui on start
             _seatReservedUI.gameObject.SetActive(false);
             _seatAvailableUI.gameObject.SetActive(false);
@@ -77,6 +79,8 @@ namespace SeatFinder
                 .AddListener(() => ReserveSeat(_prefPanel.UserName));
             _seatReservedUI.GetChild(2).GetComponent<Button>().onClick
                 .AddListener(() => UnReserveSeat(_prefPanel.UserName));
+
+            updateIcons();
         }
 
         private void Update()
@@ -111,49 +115,114 @@ namespace SeatFinder
             {
                 timer = 0;
                 GetSeatOccupant(_prefPanel.UserName);
+                /*updateIcons();*/
             }
         }
 
         public void updateIcons()
         {
-            Transform icons = transform.GetChild(0).GetChild(0).Find("Icons");
-            Image noiseIcon = icons.GetChild(0).GetComponent<Image>();
-            Image temperatureIcon = icons.GetChild(1).GetComponent<Image>();
-            Image windowIcon = icons.GetChild(2).GetComponent<Image>();
-            Image outletIcon = icons.GetChild(3).GetComponent<Image>();
+            Transform icons = transform.GetChild(0).GetChild(0).GetChild(0).Find("Icons");
+            Transform light = icons.Find("light").GetChild(1);
+            Transform noise = icons.Find("noise").GetChild(1);
+            Transform thermal = icons.Find("thermal").GetChild(1);
+            Image[] light_bar = light.GetComponentsInChildren<Image>();
+            Image[] noise_bar = noise.GetComponentsInChildren<Image>();
+            Image[] thermal_bar = thermal.GetComponentsInChildren<Image>();
 
             float[] distances = { ClosestNoiseSrcDist, ClosestAcDist, ClosestWindowDist };
-            Image[] distIcons = { noiseIcon, temperatureIcon, windowIcon };
-            string[] iconNames = { "n", "t", "w" };
-            for (int i = 0; i < 3; i++)
-            {
-                float dist = distances[i];
-                Image icon = distIcons[i];
-                string name = iconNames[i];
 
-                if (dist < closeThreshold)
-                {
-                    icon.sprite = Resources.Load<Sprite>($"Icons/{name}0");
-                }
-                else if (dist < mediumThreshold)
-                {
-                    icon.sprite = Resources.Load<Sprite>($"Icons/{name}1");
-                }
-                else
-                {
-                    icon.sprite = Resources.Load<Sprite>($"Icons/{name}2");
-                }
+            
+            int light_level = 0;
+            if (distances[2] < closeThreshold)
+            {
+                light_level = 1;
             }
-
-            Debug.Log("outlet " + OutletsPresent);
-            if (OutletsPresent)
+            else if (distances[2] < mediumThreshold)
             {
-                outletIcon.sprite = Resources.Load<Sprite>("Icons/o0");
+                light_level = 2;
             }
             else
             {
-                outletIcon.sprite = Resources.Load<Sprite>("Icons/o1");
+                light_level = 3;
             }
+
+            int noise_level = 0;
+            if (distances[0] < closeThreshold)
+            {
+                noise_level = 1;
+            }
+            else if (distances[0] < mediumThreshold)
+            {
+                noise_level = 2;
+            }
+            else
+            {
+                noise_level = 3;
+            }
+
+            int thermal_level = 0;
+            if (distances[1] < closeThreshold)
+            {
+                thermal_level = 1;
+            }
+            else if (distances[1] < mediumThreshold)
+            {
+                thermal_level = 2;
+            }
+            else
+            {
+                thermal_level = 3;
+            }
+
+
+
+            for (int i = 0; i < distances.Length; i++)
+            {
+                if (light_level > 0)
+                {
+                    light_bar[i].color = new Color32(92, 255, 166, 255);
+                    light_level--;
+                }
+                else
+                {
+                    light_bar[i].color = new Color32(217, 217, 217, 255);
+                }
+
+
+                if (noise_level > 0)
+                {
+                    noise_bar[i].color = new Color32(92, 255, 166, 255);
+                    noise_level--;
+                }
+                else
+                {
+                    noise_bar[i].color = new Color32(217, 217, 217, 255);
+                }
+
+
+                if (thermal_level > 0)
+                {
+                    thermal_bar[i].color = new Color32(92, 255, 166, 255);
+                    thermal_level--;
+                }
+                else
+                {
+                    thermal_bar[i].color = new Color32(217, 217, 217, 255);
+                }
+
+
+            }
+
+
+            /*Debug.Log("outlet " + OutletsPresent);*/
+            /*            if (OutletsPresent)
+                        {
+                            outletIcon.sprite = Resources.Load<Sprite>("Icons/o0");
+                        }
+                        else
+                        {
+                            outletIcon.sprite = Resources.Load<Sprite>("Icons/o1");
+                        }*/
         }
 
         public void showSuggestionArrow()
@@ -170,7 +239,7 @@ namespace SeatFinder
             _arrow.GetComponent<MeshRenderer>().material = Resources.Load<Material>("reservedMaterial");
             _arrow.SetActive(true);
         }
-        
+
         public void HideArrow()
         {
             _arrow.SetActive(false);
@@ -186,7 +255,7 @@ namespace SeatFinder
                     if (task.IsFaulted)
                     {
                         // Handle the error...
-                        Debug.Log("Fault"); 
+                        Debug.Log("Fault");
                     }
                     else if (task.IsCompleted)
                     {
@@ -195,7 +264,7 @@ namespace SeatFinder
                         // available
                         if (seatOccupant == "")
                         {
-                            
+
                             _seatReservedUI.gameObject.SetActive(false);
                             _seatAvailableUI.gameObject.SetActive(true);
                         }
@@ -220,7 +289,7 @@ namespace SeatFinder
                     }
                 });
         }
-        
+
         public void ReserveSeat(string userName)
         {
             reference = FirebaseDatabase.DefaultInstance.GetReference("seats/" + gameObject.name);

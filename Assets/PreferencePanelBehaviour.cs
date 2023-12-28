@@ -66,15 +66,15 @@ namespace SeatFinder
         {
             if (showMenu)
             {
-                menuTransform.Play("SlidingMenu");
+                menuTransform.Play("SlideDown");
                 showMenu = false;
-                SliderBtnText.text = "^";
+                /*SliderBtnText.text = "^";*/
             }
             else
             {
                 menuTransform.Play("SlideUp");
                 showMenu = true;
-                SliderBtnText.text = "v";
+                /*SliderBtnText.text = "v";*/
             }
             
         }
