@@ -693,6 +693,7 @@ MonoBehaviour:
   temperatureValue: {fileID: 1671982077572885657}
   humidityValue: {fileID: 8840782269092866723}
   noiseValue: {fileID: 3621388829793640927}
+  panelTitle: {fileID: 2193952320883829993}
 --- !u!1 &3280454187042693473
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,10 +1137,10 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5931571371205196840}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4497748792674142910}
   m_Father: {fileID: 7237502403552221259}

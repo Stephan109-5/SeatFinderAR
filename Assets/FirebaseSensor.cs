@@ -22,6 +22,8 @@ namespace SeatFinder
         {
             _sensorPanel = panel;
             SensorPosition = new Vector3(0, 0, 0);
+            
+            _sensorPanel.updateName(roomId, sensorId);
             Measurements = new Dictionary<string, int>
             {
                 { "temperature", Int32.MinValue },
@@ -51,6 +53,9 @@ namespace SeatFinder
                         float.Parse(snapshot.Child("y").Value.ToString()),
                         float.Parse(snapshot.Child("z").Value.ToString())
                     );
+                    Debug.Log(snapshot.Child("x"));
+                    Debug.Log(snapshot.Child("y"));
+                    Debug.Log(snapshot.Child("z"));
                     this._sensorPanel.updateSensorPosition(SensorPosition);
                 }
             });
