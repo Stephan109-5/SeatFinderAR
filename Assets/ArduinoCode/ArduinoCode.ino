@@ -59,7 +59,7 @@ void setup()
     fbdo.setBSSLBufferSize(4096, 1024);
     fbdo.setResponseSize(4096);
 
-    path = "/rooms/0/sensors/0/measurements";
+    path = "/rooms/Room427/sensors/0/measurements";
 
     config.token_status_callback = tokenStatusCallback; // see addons/TokenHelper.h
     Serial.println("Signing in as user mail@fabianschmid.co");
