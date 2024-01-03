@@ -179,7 +179,6 @@ namespace SeatFinder
             {
                 if (light_level > 0)
                 {
-                    Debug.Log(light_bar[i].name);
                     light_bar[i].color = new Color(92, 255, 166, 1);
                     light_level--;
                 }

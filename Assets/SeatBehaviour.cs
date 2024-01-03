@@ -125,104 +125,60 @@ namespace SeatFinder
             Transform light = icons.Find("light").GetChild(1);
             Transform noise = icons.Find("noise").GetChild(1);
             Transform thermal = icons.Find("thermal").GetChild(1);
+            Transform outlet = icons.Find("outlet").GetChild(1).GetChild(0);
+
             Image[] light_bar = light.GetComponentsInChildren<Image>();
             Image[] noise_bar = noise.GetComponentsInChildren<Image>();
             Image[] thermal_bar = thermal.GetComponentsInChildren<Image>();
+            Image outletIcon = outlet.GetComponent<Image>();
+
+            Array[] loading_bar = {light_bar, noise_bar, thermal_bar};
 
             float[] distances = { ClosestNoiseSrcDist, ClosestAcDist, ClosestWindowDist };
 
-            
-            int light_level = 0;
-            if (distances[2] < closeThreshold)
-            {
-                light_level = 1;
-            }
-            else if (distances[2] < mediumThreshold)
-            {
-                light_level = 2;
-            }
-            else
-            {
-                light_level = 3;
-            }
+            Color32[] color_l_n_t = { new Color32(253, 255, 92, 255), new Color32(92, 255, 248, 255), new Color32(92, 255, 166, 255) };
+            Color32 blank_color = new Color32(217, 217, 217, 255);
 
-            int noise_level = 0;
-            if (distances[0] < closeThreshold)
-            {
-                noise_level = 1;
-            }
-            else if (distances[0] < mediumThreshold)
-            {
-                noise_level = 2;
-            }
-            else
-            {
-                noise_level = 3;
-            }
+            int[] light_noise_thermal = { 0, 0, 0 };
 
-            int thermal_level = 0;
-            if (distances[1] < closeThreshold)
+            for (int i = 0; i < 3; i++)
             {
-                thermal_level = 1;
-            }
-            else if (distances[1] < mediumThreshold)
-            {
-                thermal_level = 2;
-            }
-            else
-            {
-                thermal_level = 3;
-            }
-
-
-
-            for (int i = 0; i < distances.Length; i++)
-            {
-                if (light_level > 0)
+                if (distances[i] < closeThreshold)
                 {
-                    light_bar[i].color = new Color32(92, 255, 166, 255);
-                    light_level--;
+                    light_noise_thermal[i] = 1;
+                }
+                else if (distances[i] < mediumThreshold)
+                {
+                    light_noise_thermal[i] = 2;
                 }
                 else
                 {
-                    light_bar[i].color = new Color32(217, 217, 217, 255);
+                    light_noise_thermal[i] = 3;
                 }
 
-
-                if (noise_level > 0)
+                /*Debug.Log("Number " + i + ", val: " + light_noise_thermal[i])*/;
+                
+                foreach (Image img in loading_bar[i])
                 {
-                    noise_bar[i].color = new Color32(92, 255, 166, 255);
-                    noise_level--;
+                    if (light_noise_thermal[i] > 0)
+                    {
+                        img.color = color_l_n_t[i];
+                        light_noise_thermal[i]--;
+                    }
+                    else { img.color = blank_color; }
                 }
-                else
-                {
-                    noise_bar[i].color = new Color32(217, 217, 217, 255);
-                }
-
-
-                if (thermal_level > 0)
-                {
-                    thermal_bar[i].color = new Color32(92, 255, 166, 255);
-                    thermal_level--;
-                }
-                else
-                {
-                    thermal_bar[i].color = new Color32(217, 217, 217, 255);
-                }
-
 
             }
-
 
             /*Debug.Log("outlet " + OutletsPresent);*/
-            /*            if (OutletsPresent)
-                        {
-                            outletIcon.sprite = Resources.Load<Sprite>("Icons/o0");
-                        }
-                        else
-                        {
-                            outletIcon.sprite = Resources.Load<Sprite>("Icons/o1");
-                        }*/
+            if (OutletsPresent)
+            {
+                outletIcon.sprite = Resources.Load<Sprite>("Checked_Checkbox");
+            }
+            else
+            {
+                outletIcon.sprite = null;
+            }
         }
 
         public void showSuggestionArrow()

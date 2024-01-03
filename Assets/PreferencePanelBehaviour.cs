@@ -19,27 +19,30 @@ namespace SeatFinder
         private Button _findSeatButton; 
         private Button GoBackButton;
         public string UserName;
-        public TMP_Text SliderBtnText;
+        /*public TMP_Text SliderBtnText;*/
+        private Transform SliderBtn;
 
         private Main _mainScript;
-        
+
         private void Start()
         {
             _temperatureSlider = transform.GetChild(0).Find("TempSlider").GetComponent<Slider>();
-            _noiseSlider =   transform.GetChild(0).Find("NoiseSlider").GetComponent<Slider>();
-            _windowSlider =  transform.GetChild(0).Find("WindowSlider").GetComponent<Slider>();
-            _outletToggle =  transform.GetChild(0).Find("OutletToggle").GetComponent<Toggle>();
-            _userNameInput =  transform.GetChild(0).Find("UserNameInput").GetComponent<TMP_InputField>();
+            _noiseSlider = transform.GetChild(0).Find("NoiseSlider").GetComponent<Slider>();
+            _windowSlider = transform.GetChild(0).Find("WindowSlider").GetComponent<Slider>();
+            _outletToggle = transform.GetChild(0).Find("OutletToggle").GetComponent<Toggle>();
+            _userNameInput = transform.GetChild(0).Find("UserNameInput").GetComponent<TMP_InputField>();
             _findSeatButton = transform.GetChild(0).Find("FindSeatButton").GetComponent<Button>();
 
             _mainScript = GameObject.Find("AreaTarget").GetComponent<Main>();
-            
+
             _findSeatButton.onClick.AddListener(FindSeat);
 
             showMenu = true;
             menuTransform = transform.GetChild(0).GetComponent<Animation>();
             GoBackButton = transform.GetChild(0).Find("GoBackBtn").GetComponent<Button>();
             GoBackButton.onClick.AddListener(GoBackScene);
+            SliderBtn = transform.GetChild(0).Find("SliderBtn");
+
         }
 
         public void FindSeat()
@@ -67,12 +70,14 @@ namespace SeatFinder
             if (showMenu)
             {
                 menuTransform.Play("SlideDown");
+                SliderBtn.Rotate(0f, 0f, 180f);
                 showMenu = false;
                 /*SliderBtnText.text = "^";*/
             }
             else
             {
                 menuTransform.Play("SlideUp");
+                SliderBtn.Rotate(0f, 0f, 180f);
                 showMenu = true;
                 /*SliderBtnText.text = "v";*/
             }
