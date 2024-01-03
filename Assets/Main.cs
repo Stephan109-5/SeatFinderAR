@@ -6,6 +6,7 @@ using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using System.Linq;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
 
 namespace SeatFinder
 {
@@ -31,6 +32,7 @@ namespace SeatFinder
     
     public class Main : MonoBehaviour
     {
+        public GameObject sensorPanelPrefab;
         private Transform _seatsContainer;
         
         private List<SeatBehaviour> _seatBehavioursList;
@@ -42,13 +44,16 @@ namespace SeatFinder
         private Transform _windowsContainer;
         private Transform _noiseSourcesContainer;
         private Transform _outletsContainer;
+        private Transform _sensorsContainer;
         
         private float _outletPresenceThresholdDistance;
+        private List<FirebaseSensor> _sensors;
+        
         
         private void Start()
         {
             _seatsContainer = GameObject.Find("Seats").transform;
-            
+            _sensors = new List<FirebaseSensor>();
             _airconditionersContainer = GameObject.Find("Airconditioners").transform;
             _windowsContainer = GameObject.Find("Windows").transform;
             _outletsContainer = GameObject.Find("Outlets").transform;
@@ -57,8 +62,13 @@ namespace SeatFinder
             _seatBehavioursList = new List<SeatBehaviour>();
             _outletPresenceThresholdDistance = 1.5f;
             
+            _sensorsContainer = GameObject.Find("Sensors").transform;
+            
+            GameObject panel = Instantiate(sensorPanelPrefab, Vector3.zero, Quaternion.identity, _sensorsContainer);
+            _sensors.Add(new FirebaseSensor("0", "0", panel.GetComponent<SensorPanel>()));
+            
             calculateSeatDistances();
-           
+
         }
 
         private void calculateSeatDistances()
