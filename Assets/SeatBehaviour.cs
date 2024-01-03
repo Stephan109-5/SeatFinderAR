@@ -3,6 +3,7 @@ using Firebase.Database;
 using Firebase.Extensions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Vector3 = UnityEngine.Vector3;
 
@@ -39,8 +40,7 @@ namespace SeatFinder
         // firebase stuff
         private DatabaseReference reference;
         private string seatOccupant;
-        private float timer;
-
+        private String path;
 
         private void Start()
         {
@@ -66,7 +66,6 @@ namespace SeatFinder
 
             _arrow = transform.GetChild(1).GetChild(0).gameObject;
             _arrow.SetActive(false);
-            timer = 0;
             _prefPanel = GameObject.Find("PreferenceCanvas").GetComponent<PreferencePanelBehaviour>();
 
             // hide seat ui on start
@@ -81,6 +80,11 @@ namespace SeatFinder
                 .AddListener(() => UnReserveSeat(_prefPanel.UserName));
 
             updateIcons();
+            
+            String roomName = SceneManager.GetActiveScene().name;
+            path = "rooms/" + roomName + "/seats/" + gameObject.name;
+            
+            FirebaseDatabase.DefaultInstance.GetReference(path).ValueChanged += GetSeatOccupant;
         }
 
         private void Update()
@@ -104,18 +108,6 @@ namespace SeatFinder
             {
                 _seatIcons.SetActive(true);
                 _textContainerUI.SetActive(true);
-            }
-
-            // refresh booking status every 2s
-            if (timer < 2)
-            {
-                timer += Time.deltaTime;
-            }
-            else
-            {
-                timer = 0;
-                GetSeatOccupant(_prefPanel.UserName);
-                /*updateIcons();*/
             }
         }
 
@@ -201,60 +193,52 @@ namespace SeatFinder
             _arrow.SetActive(false);
         }
 
-        private void GetSeatOccupant(string userName)
+        private void GetSeatOccupant(object sender, ValueChangedEventArgs args)
         {
-            this.reference = FirebaseDatabase.DefaultInstance.GetReference("seats/" + gameObject.name);
 
-            this.reference
-                .GetValueAsync().ContinueWithOnMainThread(task =>
+            if (args.DatabaseError != null) {
+                Debug.LogError(args.DatabaseError.Message);
+                return;
+            }
+        
+            DataSnapshot snapshot = args.Snapshot;
+            seatOccupant = (string)snapshot.Child("occupant").GetValue(true);
+            // available
+            if (seatOccupant == "")
+            {
+
+                _seatReservedUI.gameObject.SetActive(false);
+                _seatAvailableUI.gameObject.SetActive(true);
+            }
+            // reserved
+            else
+            {
+                _seatReservedUI.gameObject.SetActive(true);
+                _seatAvailableUI.gameObject.SetActive(false);
+
+                _seatReservedUI.GetChild(1).GetComponent<TextMeshProUGUI>().text = seatOccupant;
+
+                if (seatOccupant == _prefPanel.UserName)
                 {
-                    if (task.IsFaulted)
-                    {
-                        // Handle the error...
-                        Debug.Log("Fault");
-                    }
-                    else if (task.IsCompleted)
-                    {
-                        DataSnapshot snapshot = task.Result;
-                        seatOccupant = (string)snapshot.Child("Occupant").GetValue(true);
-                        // available
-                        if (seatOccupant == "")
-                        {
-
-                            _seatReservedUI.gameObject.SetActive(false);
-                            _seatAvailableUI.gameObject.SetActive(true);
-                        }
-                        // reserved
-                        else
-                        {
-                            _seatReservedUI.gameObject.SetActive(true);
-                            _seatAvailableUI.gameObject.SetActive(false);
-
-                            _seatReservedUI.GetChild(1).GetComponent<TextMeshProUGUI>().text = seatOccupant;
-
-                            if (seatOccupant == userName)
-                            {
-                                // show unreserve button
-                                _seatReservedUI.GetChild(2).gameObject.SetActive(true);
-                            }
-                            else
-                            {
-                                _seatReservedUI.GetChild(2).gameObject.SetActive(false);
-                            }
-                        }
-                    }
-                });
+                    // show unreserve button
+                    _seatReservedUI.GetChild(2).gameObject.SetActive(true);
+                }
+                else
+                {
+                    _seatReservedUI.GetChild(2).gameObject.SetActive(false);
+                }
+            }
+                    
         }
 
         public void ReserveSeat(string userName)
         {
-            reference = FirebaseDatabase.DefaultInstance.GetReference("seats/" + gameObject.name);
+            reference = FirebaseDatabase.DefaultInstance.GetReference(path);
             /*Debug.Log(name.username);*/
 
             if (userName != "")
             {
-                reference.Child("Occupant").SetValueAsync(userName);
-                GetSeatOccupant(userName);
+                reference.Child("occupant").SetValueAsync(userName);
                 _mainScript.hideBestSeats();
                 showReservedArrow();
             }
@@ -262,13 +246,12 @@ namespace SeatFinder
 
         public void UnReserveSeat(string userName)
         {
-            reference = FirebaseDatabase.DefaultInstance.GetReference("seats/" + gameObject.name);
+            reference = FirebaseDatabase.DefaultInstance.GetReference(path);
             /*Debug.Log(name.username);*/
 
             if (userName != "")
             {
-                reference.Child("Occupant").SetValueAsync("");
-                GetSeatOccupant(userName);
+                reference.Child("occupant").SetValueAsync("");
                 HideArrow();
             }
         }

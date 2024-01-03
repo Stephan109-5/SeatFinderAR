@@ -132,22 +132,6 @@ namespace SeatFinder
                         dist < _outletPresenceThresholdDistance || seatBehaviour.OutletsPresent;
                 }
 
-
-
-
-                // GameObject lineObject = new GameObject("Line");
-                // LineRenderer lr = lineObject.AddComponent<LineRenderer>();
-                // lr.endColor = Color.blue;
-                // lr.startColor = Color.black;
-                // Vector3[] positions = new Vector3[3];
-                // positions[0] = seat.position;
-                // positions[1] = seatBehaviour.ClosestAcPos;
-                // lr.positionCount = 2;
-                // lr.SetPositions(positions);
-                // lr.startWidth = 0.003f;
-                // lr.endWidth = 0.03f;
-                // Debug.Log("Seat " + seatIndex + " has AC dist " + seatBehaviour.ClosestAcDist + " and window dist " + seatBehaviour.ClosestWindowDist + " and noise dist " + seatBehaviour.ClosestNoiseSrcDist);
-
                 _seatBehavioursList.Add(seatBehaviour);
                 seatBehaviour.updateIcons();
             }
