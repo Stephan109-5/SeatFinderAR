@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Firebase.Database;
 using Firebase.Extensions;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace SeatFinder
