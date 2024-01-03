@@ -39,7 +39,7 @@ namespace SeatFinder
                 .GetReference("rooms/" + roomId + "/sensors/" + sensorId);
             
             this.reference_.Child("position").GetValueAsync().ContinueWithOnMainThread(task =>
-            {
+                {
                 if (task.IsFaulted)
                 {
                     Debug.LogError("Error getting sensor position");
