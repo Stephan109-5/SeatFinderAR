@@ -40,7 +40,7 @@ namespace SeatFinder
         // firebase stuff
         private DatabaseReference reference;
         private string seatOccupant;
-        private String path;
+        private string path;
 
         private void Start()
         {
@@ -50,7 +50,6 @@ namespace SeatFinder
             OutletsPresent = false;
             _mainCam = Camera.main;
             _seatIcons = transform.GetChild(0).GetChild(0).GetChild(0).Find("Icons").gameObject;
-
 
             _textContainerUI = transform.GetChild(0).GetChild(0).Find("Text").gameObject;
 
@@ -79,12 +78,14 @@ namespace SeatFinder
             _seatReservedUI.GetChild(2).GetComponent<Button>().onClick
                 .AddListener(() => UnReserveSeat(_prefPanel.UserName));
 
+            string roomName = SceneManager.GetActiveScene().name;
+
+            path = "rooms/" + roomName + "/seats/" + gameObject.name;
+
+            FirebaseDatabase.DefaultInstance.GetReference(path).ValueChanged += GetSeatOccupant;
+
             updateIcons();
             
-            String roomName = SceneManager.GetActiveScene().name;
-            path = "rooms/" + roomName + "/seats/" + gameObject.name;
-            
-            FirebaseDatabase.DefaultInstance.GetReference(path).ValueChanged += GetSeatOccupant;
         }
 
         private void Update()
@@ -206,7 +207,6 @@ namespace SeatFinder
             // available
             if (seatOccupant == "")
             {
-
                 _seatReservedUI.gameObject.SetActive(false);
                 _seatAvailableUI.gameObject.SetActive(true);
             }

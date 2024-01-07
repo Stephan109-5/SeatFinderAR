@@ -16,7 +16,7 @@ public class RoomPanelScript : MonoBehaviour
     private TextMeshProUGUI OccupancyLabel;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         RoomName = SceneManager.GetActiveScene().name;
         RoomNameLabel = GameObject.Find("RoomName").GetComponent<TextMeshProUGUI>();
@@ -25,15 +25,13 @@ public class RoomPanelScript : MonoBehaviour
 
         FirebaseDatabase.DefaultInstance.GetReference("rooms/" + RoomName + "/seats").ValueChanged += GetRoomOccupancy;
 
-        
-
     }
 
     // Update is called once per frame
-    void Update()
+/*    void Update()
     {
         
-    }
+    }*/
 
     private void GetRoomOccupancy(object sender, ValueChangedEventArgs args)
     {

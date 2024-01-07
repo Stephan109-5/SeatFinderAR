@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Firebase.Database;
 using Firebase.Extensions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SeatFinder
 {
@@ -31,7 +32,8 @@ namespace SeatFinder
 
             };
             Debug.Log("Initializing sensor " + sensorId + " in room " + roomId);
-            this.RoomId = roomId;
+
+            this.RoomId = SceneManager.GetActiveScene().name;
             this.SensorId = sensorId;
             this.reference_ = FirebaseDatabase.DefaultInstance
                 .GetReference("rooms/" + roomId + "/sensors/" + sensorId);

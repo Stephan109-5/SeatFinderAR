@@ -39,6 +39,7 @@ android {
     }
 
     defaultConfig {
+		multiDexEnabled true
         minSdkVersion **MINSDKVERSION**
         targetSdkVersion **TARGETSDKVERSION**
         ndk {

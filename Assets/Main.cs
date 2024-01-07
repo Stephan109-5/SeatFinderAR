@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
-using TMPro;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using System.Linq;
-using UnityEngine.UI;
 using Quaternion = UnityEngine.Quaternion;
+using UnityEngine.SceneManagement;
 
 namespace SeatFinder
 {
@@ -65,7 +63,9 @@ namespace SeatFinder
             _sensorsContainer = GameObject.Find("Sensors").transform;
             
             GameObject panel = Instantiate(sensorPanelPrefab, Vector3.zero, Quaternion.identity, _sensorsContainer);
-            _sensors.Add(new FirebaseSensor("0", "0", panel.GetComponent<SensorPanel>()));
+
+            string roomId = SceneManager.GetActiveScene().name;
+            _sensors.Add(new FirebaseSensor(roomId, "0", panel.GetComponent<SensorPanel>()));
             
             calculateSeatDistances();
 
@@ -130,6 +130,7 @@ namespace SeatFinder
                     // set to present if closer than threshold, otherwise leave as is
                     seatBehaviour.OutletsPresent =
                         dist < _outletPresenceThresholdDistance || seatBehaviour.OutletsPresent;
+
                 }
 
                 _seatBehavioursList.Add(seatBehaviour);
